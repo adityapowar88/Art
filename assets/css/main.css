@@ -360,6 +360,10 @@ h6 {
 
 /* Navmenu - Mobile */
 @media (max-width: 1199px) {
+  .header .header-social-links {
+    display: none !important;
+  }
+
   .mobile-nav-toggle {
     color: var(--nav-color);
     font-size: 28px;
@@ -378,15 +382,54 @@ h6 {
     display: none;
     list-style: none;
     position: absolute;
-    inset: 60px 20px 20px 20px;
-    padding: 10px 0;
+    inset: 60px 20px auto 20px;
+    padding: 8px 0;
     margin: 0;
     border-radius: 6px;
     background-color: var(--nav-mobile-background-color);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
     transition: 0.3s;
     z-index: 9998;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .navmenu li.navmenu-social-links {
+    padding: 12px 20px 6px 20px;
+    margin-top: 8px;
+    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  }
+
+  .navmenu li.navmenu-social-links .navmenu-social-inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .navmenu li.navmenu-social-links .navmenu-social-inner i {
+    font-size: 22px;
+  }
+
+  .navmenu li.navmenu-social-links a {
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: color-mix(in srgb, var(--default-color), transparent 40%);
+    font-size: 30px;
+    transition: 0.3s;
+  }
+
+  .navmenu li.navmenu-social-links a:hover {
+    color: var(--accent-color);
+  }
+
+  .navmenu li.navmenu-social-links a i {
+    width: auto;
+    height: auto;
+    margin-left: 0;
+    border-radius: 0;
+    background: none;
   }
 
   .navmenu a,
@@ -908,8 +951,8 @@ section,
 .hero .cta-button .btn {
   display: inline-flex;
   align-items: center;
-  background-color: transparent;
-  border: 1px solid color-mix(in srgb, var(--default-color), transparent 40%);
+  background-color: var(--nav-dropdown-hover-color);
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 40%);
   color: var(--default-color);
   padding: 0.75rem 1.5rem;
   border-radius: 50px;
@@ -921,21 +964,29 @@ section,
 
 .hero .cta-button .btn span {
   margin-right: 0.5rem;
+  color: var(--contrast-color);
 }
 
 .hero .cta-button .btn i {
   font-size: 1.2rem;
   transition: transform 0.3s ease;
+  color: var(--contrast-color);
+
 }
 
 .hero .cta-button .btn:hover {
   background-color: var(--accent-color);
   border-color: var(--accent-color);
-  color: var(--contrast-color);
+  color: var(--accent-color);
 }
 
 .hero .cta-button .btn:hover i {
   transform: translateX(5px);
+  color: var(--background-color);
+}
+
+.hero .cta-button .btn:hover span {
+  color: var(--background-color);
 }
 
 .hero .visual-content {
