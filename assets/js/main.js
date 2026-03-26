@@ -132,6 +132,154 @@
   });
 
   /**
+   * Gallery: Pixel Transition hover effect (keeps overlay + expand button as-is)
+   */
+  function initGalleryPixelTransition() {
+    const entries = document.querySelectorAll('.gallery .gallery-entry');
+    if (!entries.length) return;
+
+    const isTouchDevice =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia('(pointer: coarse)').matches;
+
+    const GRID_SIZE = 8; // similar feel to the snippet you shared
+    const STEP_MS = 420; // should match CSS animation duration-ish
+    const OVERLAY_DELAY_MS = STEP_MS + 60; // overlay reveals after pixel effect starts/finishes
+
+    function ensurePixelLayer(entryEl) {
+      const figure = entryEl.querySelector('.entry-image');
+      if (!figure) return null;
+
+      let pixelsLayer = figure.querySelector(':scope > .pt-pixels');
+      if (pixelsLayer) return pixelsLayer;
+
+      pixelsLayer = document.createElement('div');
+      pixelsLayer.className = 'pt-pixels';
+
+      const size = 100 / GRID_SIZE;
+      for (let row = 0; row < GRID_SIZE; row++) {
+        for (let col = 0; col < GRID_SIZE; col++) {
+          const px = document.createElement('div');
+          px.className = 'pt-pixel';
+          px.style.width = `${size}%`;
+          px.style.height = `${size}%`;
+          px.style.left = `${col * size}%`;
+          px.style.top = `${row * size}%`;
+          pixelsLayer.appendChild(px);
+        }
+      }
+
+      figure.appendChild(pixelsLayer);
+      return pixelsLayer;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function run(entryEl) {
+      if (entryEl.classList.contains('pt-animating')) return;
+      const layer = ensurePixelLayer(entryEl);
+      if (!layer) return;
+
+      const pixels = Array.from(layer.querySelectorAll('.pt-pixel'));
+      if (!pixels.length) return;
+
+      entryEl.classList.add('pt-animating');
+
+      // Random stagger via animation delays (no extra deps like GSAP)
+      const order = shuffle(pixels.slice());
+      const stagger = Math.max(6, Math.floor(STEP_MS / order.length));
+      order.forEach((px, idx) => {
+        px.style.animationDelay = `${idx * stagger}ms`;
+      });
+
+      window.setTimeout(() => {
+        entryEl.classList.remove('pt-animating');
+        // cleanup delays so re-hover feels fresh
+        pixels.forEach(px => (px.style.animationDelay = ''));
+      }, STEP_MS + order.length * stagger + 50);
+    }
+
+    entries.forEach(entryEl => {
+      // Build once up-front so hover is instant
+      ensurePixelLayer(entryEl);
+      entryEl.classList.add('pt-enhanced');
+
+      const setHovered = (on) => entryEl.classList.toggle('pt-hovered', on);
+      const setOverlayShown = (on) => entryEl.classList.toggle('pt-show-overlay', on);
+
+      let overlayTimer = null;
+      const scheduleOverlay = () => {
+        if (overlayTimer) window.clearTimeout(overlayTimer);
+        overlayTimer = window.setTimeout(() => {
+          // After the pixel effect, switch to the "second state":
+          // yellow bg + image hidden + show title/expand overlay
+          setHovered(true);
+          setOverlayShown(true);
+        }, OVERLAY_DELAY_MS);
+      };
+      const clearOverlayTimer = () => {
+        if (overlayTimer) window.clearTimeout(overlayTimer);
+        overlayTimer = null;
+      };
+
+      const onEnter = () => {
+        // Keep image visible initially; pixel effect plays on top of it.
+        // The yellow bg + overlay will appear after `OVERLAY_DELAY_MS`.
+        setHovered(false);
+        setOverlayShown(false);
+        run(entryEl);
+        scheduleOverlay();
+      };
+      const onLeave = () => setHovered(false);
+      const onFocusIn = () => {
+        setHovered(false);
+        setOverlayShown(false);
+        run(entryEl);
+        scheduleOverlay();
+      };
+      const onFocusOut = () => setHovered(false);
+
+      if (!isTouchDevice) {
+        entryEl.addEventListener('mouseenter', onEnter);
+        entryEl.addEventListener('mouseleave', () => {
+          clearOverlayTimer();
+          setOverlayShown(false);
+          setHovered(false);
+          onLeave();
+        });
+        entryEl.addEventListener('focusin', onFocusIn);
+        entryEl.addEventListener('focusout', () => {
+          clearOverlayTimer();
+          setOverlayShown(false);
+          setHovered(false);
+          onFocusOut();
+        });
+      } else {
+        // On touch devices, run on tap (but don't break the expand button)
+        entryEl.addEventListener('click', e => {
+          if (e.target && e.target.closest && e.target.closest('a.glightbox')) return;
+          setHovered(false);
+          setOverlayShown(false);
+          run(entryEl);
+          scheduleOverlay();
+          window.setTimeout(() => {
+            clearOverlayTimer();
+            setOverlayShown(false);
+            setHovered(false);
+          }, 1400);
+        });
+      }
+    });
+  }
+
+  /**
    * Init isotope layout and filters
    */
   document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
@@ -212,5 +360,7 @@
   }
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
+
+  window.addEventListener('load', initGalleryPixelTransition);
 
 })();

@@ -2146,7 +2146,8 @@ section,
 }
 
 .gallery .gallery-entry:hover .entry-image img {
-  transform: scale(1.05);
+  /* Replaced the old zoom hover with a pixel-transition effect (see `.pt-*` below) */
+  transform: none;
 }
 
 .gallery .gallery-entry:hover .entry-image .entry-overlay {
@@ -2163,6 +2164,57 @@ section,
   transform: translateY(0);
 }
 
+/* When the pixel transition enhancement is enabled, delay the overlay reveal:
+   - hover triggers pixel effect + grey bg + hides image
+   - overlay becomes visible only after JS adds `.pt-show-overlay` */
+.gallery .gallery-entry.pt-enhanced:not(.pt-show-overlay):hover .entry-image .entry-overlay,
+.gallery .gallery-entry.pt-enhanced:not(.pt-show-overlay):hover .entry-image .entry-overlay .overlay-content,
+.gallery .gallery-entry.pt-enhanced:not(.pt-show-overlay):hover .entry-image .entry-overlay .entry-links a {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .entry-overlay {
+  opacity: 1;
+  transform: translateY(0);
+  z-index: 6;
+  /* Keep your original overlay layout/position; only remove the dark gradient so it sits clean on yellow */
+  background: transparent;
+}
+
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .entry-overlay .overlay-content {
+  transform: translateY(0);
+}
+
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .entry-overlay .entry-links a {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Yellow state typography + button behavior */
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .entry-overlay .entry-meta {
+  color: rgba(20, 20, 20, 0.9);
+}
+
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .entry-overlay .entry-links a {
+  background: rgba(20, 20, 20, 0.9);
+  color: #ffffff;
+}
+
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .entry-overlay .entry-links a:hover {
+  background: #ffffff;
+  color: rgba(20, 20, 20, 0.95);
+}
+
+
+/* Once the overlay is shown, fade the pixel layer so text/icons look crisp on the grey bg */
+.gallery .gallery-entry.pt-enhanced.pt-show-overlay .entry-image .pt-pixels {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+  transition: opacity 120ms ease;
+}
+
 @media (max-width: 768px) {
   .gallery .gallery-entry .entry-image .entry-overlay {
     padding: 20px;
@@ -2177,6 +2229,72 @@ section,
     width: 40px;
     height: 40px;
     font-size: 18px;
+  }
+}
+
+/* --------------------------------------------------------------
+ * Gallery Pixel Transition (non-destructive enhancement)
+ * - Keeps the existing overlay (title + expand button) intact
+ * - Only changes the image hover feel by animating a pixel grid above the image
+ * -------------------------------------------------------------- */
+
+.gallery .gallery-entry .entry-image {
+  /* contains the pixel layer */
+  isolation: isolate;
+}
+
+.gallery .gallery-entry .entry-image .entry-overlay {
+  /* Force overlay (title + expand button) to always sit above the grey bg + pixel layer */
+  z-index: 9999 !important;
+}
+
+.gallery .gallery-entry .entry-image .pt-pixels {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 1;
+}
+
+.gallery .gallery-entry .entry-image .pt-pixel {
+  position: absolute;
+  opacity: 0;
+  background: rgba(227, 161, 39, 0.95);
+  transform: scale(0.8);
+}
+
+.gallery .gallery-entry.pt-animating .entry-image .pt-pixel {
+  animation: pt-pixel-pop 420ms steps(2, end) forwards;
+}
+
+.gallery .gallery-entry.pt-hovered .entry-image {
+  background: #e3a127;
+}
+
+.gallery .gallery-entry.pt-hovered .entry-image img {
+  opacity: 0;
+}
+
+.gallery .gallery-entry .entry-image img {
+  /* allow hiding/showing image on hover without layout shift */
+  opacity: 1;
+  transition:
+    opacity 160ms ease,
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pt-pixel-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
   }
 }
 
