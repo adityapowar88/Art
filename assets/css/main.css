@@ -1239,7 +1239,7 @@ section,
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background-color: var(--surface-color);
+  background-color: var(--accent-color);
   border: 1px solid rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
@@ -1249,7 +1249,7 @@ section,
 }
 
 .about .testimonial-section .testimonial-intro .swiper-nav-buttons button:hover {
-  background-color: var(--accent-color);
+  background-color: var(--surface-color);
   border-color: var(--accent-color);
   color: var(--contrast-color);
 }
@@ -2794,6 +2794,35 @@ section,
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
+}
+
+.contact .contact-info-box .info-content .contact-social-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.contact .contact-info-box .info-content .contact-social-links a {
+  color: var(--accent-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.contact .contact-info-box .info-content .contact-social-links a i {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.contact .contact-info-box .info-content .contact-social-links a:hover {
+  transform: translateY(-2px);
+  background-color: color-mix(in srgb, var(--accent-color), transparent 88%);
 }
 
 .contact .contact-info-box .info-content p {
