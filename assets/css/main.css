@@ -3998,6 +3998,36 @@ section,
 }
 
 /*--------------------------------------------------------------
+# GLightbox — prev/next under 769px (clean skin uses top:-100% until desktop breakpoint)
+--------------------------------------------------------------*/
+@media (max-width: 768px) {
+  .glightbox-clean .gprev:not(.glightbox-button-hidden),
+  .glightbox-clean .gnext:not(.glightbox-button-hidden) {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 44px;
+    z-index: 100000;
+  }
+
+  .glightbox-clean .gprev:not(.glightbox-button-hidden) {
+    left: max(10px, env(safe-area-inset-left, 0px));
+    right: auto;
+  }
+
+  .glightbox-clean .gnext:not(.glightbox-button-hidden) {
+    right: max(10px, env(safe-area-inset-right, 0px));
+    left: auto;
+  }
+
+  .glightbox-clean .gprev:not(.glightbox-button-hidden) svg,
+  .glightbox-clean .gnext:not(.glightbox-button-hidden) svg {
+    width: 18px;
+  }
+}
+
+/*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/
 .starter-section {
