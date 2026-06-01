@@ -1367,16 +1367,6 @@ section,
   color: var(--contrast-color);
 }
 
-.services .service-header .service-summary .service-btn:hover i {
-  transform: translateX(5px);
-}
-
-@media (max-width: 992px) {
-  .services .service-header .service-summary {
-    margin-top: 30px;
-  }
-}
-
 .services .service-card {
   padding: 40px 40px 40px 40px;
   margin-bottom: 30px;
@@ -2645,6 +2635,8 @@ section,
   .pricing .plan-pricing .amount {
     font-size: 48px;
   }
+
+
 
   .pricing .plan-header {
     padding: 25px 20px 15px;
@@ -4032,4 +4024,121 @@ section,
 --------------------------------------------------------------*/
 .starter-section {
   /* Add your styles here */
+}
+
+/* Fix GLightbox caption positioning on small screens: keep caption below the image */
+@media (max-width: 767px) {
+  /* Stack media then description vertically */
+  .glightbox-open .glightbox-container .gslide .ginner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .glightbox-clean .gslide-media {
+    order: 1;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    box-shadow: none;
+  }
+
+  .glightbox-clean .gslide-description,
+  .glightbox-clean .gdesc-inner {
+    order: 2;
+    position: relative !important;
+    width: 100% !important;
+    max-width: 720px;
+    margin: 0 auto;
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    border-radius: 6px;
+    padding: 12px 14px !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  /* ensure title and description text are readable and don't overlap image */
+  .glightbox-clean .gslide-title { display: block; margin: 0 0 6px; color: #000 !important; }
+  .glightbox-clean .gslide-desc { display: block; color: #222 !important; }
+
+  /* adjust prev/next buttons so they don't collide with the caption */
+  .glightbox-clean .gprev,
+  .glightbox-clean .gnext {
+    top: 50% !important;
+  }
+}
+
+/* Tweak GLightbox mobile spacing: reduce bottom whitespace and make image slightly larger */
+@media (max-width: 767px) {
+  /* tighten vertical gap */
+  .glightbox-open .glightbox-container .gslide .ginner-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  /* increase usable image area and constrain height to viewport */
+  .glightbox-clean .gslide-media {
+    order: 1;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    box-shadow: none;
+    max-height: 62vh; /* keeps image large but within viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ensure the actual img scales nicely and doesn't overflow */
+  .glightbox-clean .gslide-media img,
+  .glightbox-clean .gslide-media .gslide-image img {
+    max-height: 62vh !important;
+    width: auto !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block;
+  }
+
+  /* Make the description use the remaining viewport height and scroll if needed */
+  .glightbox-clean .gslide-description,
+  .glightbox-clean .gdesc-inner {
+    order: 2;
+    position: relative !important;
+    width: calc(100% - 24px) !important;
+    max-width: 100% !important;
+    margin: 0 auto;
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    border-radius: 6px;
+    padding: 10px 12px !important;
+    overflow: auto !important;
+    transform: none !important;
+    /* calc viewport remaining after image and small gaps */
+    max-height: calc(100vh - 62vh - 32px) !important;
+  }
+
+  /* Remove extra bottom padding on wrapper so caption hugs content */
+  .glightbox-open .gslide,
+  .glightbox-open .gcontainer,
+  .glightbox-open .glightbox-container {
+    padding-bottom: 0 !important;
+  }
+
+  /* Slightly reduce title and description margins to save space */
+  .glightbox-clean .gslide-title { display: block; margin: 0 0 6px; color: #000 !important; }
+  .glightbox-clean .gslide-desc  { display: block; color: #222 !important; }
+  .glightbox-clean .gslide-description { padding-bottom: 8px !important; }
+
+  /* Keep nav buttons centered vertically */
+  .glightbox-clean .gprev,
+  .glightbox-clean .gnext {
+    top: 50% !important;
+  }
 }

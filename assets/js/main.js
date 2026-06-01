@@ -128,7 +128,8 @@
    * Initiate glightbox
    */
   const glightbox = GLightbox({
-    selector: '.glightbox'
+    selector: '.glightbox',
+    loop: false // do not loop between galleries; stops at last slide
   });
 
   /**
